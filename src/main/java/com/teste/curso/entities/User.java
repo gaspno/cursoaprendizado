@@ -1,13 +1,26 @@
 package com.teste.curso.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+
+
+
 
 @Entity
+@Table(name="TB__User")
 public class User implements Serializable{
 	
 	/**
@@ -22,9 +35,14 @@ public class User implements Serializable{
 	private String Name;
 	private String Email;
 	private String Phone;
-	private String Password;
+	private String Password;		
 	
 	
+	@OneToMany(mappedBy="cliente")		
+	private List<Order> Orders=new ArrayList<>();
+	
+	
+
 	public User() {
 	
 	}
@@ -97,6 +115,10 @@ public class User implements Serializable{
 	public void setPassword(String password) {
 		Password = password;
 	}
+	@JsonIgnore
+	public List<Order> getOrders() {
+		return Orders;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -104,6 +126,7 @@ public class User implements Serializable{
 		result = prime * result + ((Id == null) ? 0 : Id.hashCode());
 		return result;
 	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
