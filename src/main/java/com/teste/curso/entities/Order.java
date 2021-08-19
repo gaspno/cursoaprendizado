@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,12 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
+
 import com.teste.curso.entities.enums.OrderStatus;
 
 
@@ -44,7 +44,17 @@ public class Order implements Serializable{
 	@JoinColumn(name="cliente_id")
 	@ManyToOne	
 	private User cliente;
+	@OneToOne(mappedBy = "order",cascade = CascadeType.ALL)	
+	private Payment payment;
 	
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
+	}
+
 	@OneToMany(mappedBy = "Id.Order")
 	private Set<OrderItem> items=new HashSet<>();
 	
@@ -87,6 +97,13 @@ public class Order implements Serializable{
 
 	public void setCliente(User cliente) {
 		this.cliente = cliente;
+	}
+	public double getTotal() {
+		double sum=0.0;
+		for(OrderItem x:items) {
+			sum+=x.getPrice();
+		}
+		return sum;
 	}
 
 	@Override

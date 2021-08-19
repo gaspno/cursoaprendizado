@@ -1,70 +1,72 @@
 package com.teste.curso.entities;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.Instant;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.ManyToMany;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.Id;
+
 @Entity
-@Table(name="TB_Category")
-public class Category implements Serializable{
-	
-	
+@Table(name="Tb_Payment")
+public class Payment implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@javax.persistence.Id
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
-	private String name;
-
-	@ManyToMany(mappedBy="Categories")
-	private Set<Product> Products=new HashSet<>();
 	
+	private Instant moment;
+	@OneToOne
+	@MapsId
+	private Order order;
 	
-	@JsonIgnore
-	public Set<Product> getProducts() {
-		return Products;
-	}
-
-	public Category() {
+	public Payment() {
 		
 	}
-	
-	public Category(Long id, String name) {
+
+	public Payment(Long id, Instant moment, Order order) {
 		super();
 		Id = id;
-		this.name = name;
+		this.moment = moment;
+		this.order = order;
 	}
-	
-	
-	
+
 	public Long getId() {
 		return Id;
 	}
+
 	public void setId(Long id) {
 		Id = id;
 	}
-	public String getName() {
-		return name;
+
+	public Instant getMoment() {
+		return moment;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public void setMoment(Instant moment) {
+		this.moment = moment;
 	}
-	
-	
-	
-	
+
+	@JsonIgnore
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -72,6 +74,7 @@ public class Category implements Serializable{
 		result = prime * result + ((Id == null) ? 0 : Id.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -80,17 +83,14 @@ public class Category implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Category other = (Category) obj;
+		Payment other = (Payment) obj;
 		if (Id == null) {
 			if (other.Id != null)
 				return false;
 		} else if (!Id.equals(other.Id))
 			return false;
 		return true;
-	}	
-	
-	
-	
+	}
 	
 
 }
